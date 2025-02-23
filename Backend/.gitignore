@@ -3,7 +3,7 @@ HELP.md
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/src/main/resources/keys/*.json
+Backend\src\main\resources\keys*.json
 
 ### STS ###
 .apt_generated
