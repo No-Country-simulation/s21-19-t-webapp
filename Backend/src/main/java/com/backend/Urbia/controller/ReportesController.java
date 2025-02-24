@@ -23,8 +23,8 @@ public class ReportesController {
 
     @PostMapping
     public ResponseEntity<ReporteResponse> createReporte(
-            @RequestParam("archivos") MultipartFile[] archivos,
-            @RequestBody ReporteRequest reporteRequest) {
+            @RequestPart("archivos") MultipartFile[] archivos,
+            @RequestPart ReporteRequest reporteRequest) {
         ReporteResponse response = reporteService.createReporte(reporteRequest,archivos);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
