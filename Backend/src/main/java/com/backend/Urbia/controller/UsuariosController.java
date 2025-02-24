@@ -32,4 +32,3 @@ public class UsuariosController {
         return ResponseEntity.ok(usuario);
     }
 }
-
