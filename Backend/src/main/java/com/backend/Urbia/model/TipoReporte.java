@@ -1,9 +1,9 @@
 package com.backend.urbia.model;
 
 public enum TipoReporte {
-    ACCIDENTE,
-    DELITO,
-    BASURA,
-    HUECO,
+    SEGURIDAD,
+    INFRAESTRUCTURA,
+    SALUD,
+    EVENTOS_SOCIALES,
     OTRO
 }
