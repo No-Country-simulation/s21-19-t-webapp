@@ -1,34 +1,30 @@
 HELP.md
 
-!.mvn/wrapper/maven-wrapper.jar
-
+target/
+Backend/target/
+!**/src/main/**/target/
 !**/src/test/**/target/
-Backend\src\main\resources\keys*.json
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+Backend/src/main/resources/keys/*.json
 
-### IntelliJ IDEA ###
-.idea
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# Visual Studio Code
 .vscode/
+
+# Wrapper de Maven
+mvnw
+mvnw.cmd
+.mvn/
