@@ -11,4 +11,5 @@ public class UrbiaApplication {
 		SpringApplication.run(UrbiaApplication.class, args);
 	}
 
+
 }
