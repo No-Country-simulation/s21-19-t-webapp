@@ -9,8 +9,10 @@ import com.backend.urbia.service.integration.AIService;
 import com.backend.urbia.service.integration.GoogleCloudStorageService;
 import com.backend.urbia.util.GeoUtils;
 import org.locationtech.jts.geom.Point;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,18 +23,22 @@ import java.util.List;
 @Service
 public class ReporteServiceImpl {
 
+    private static final Logger logger = LoggerFactory.getLogger(ReporteServiceImpl.class);
+
     private final ReportesRepository reportesRepository;
     private final AIService aiService;
     private final GoogleCloudStorageService googleCloudStorageService;
 
-    @Autowired
     public ReporteServiceImpl(ReportesRepository reportesRepository, AIService aiService, GoogleCloudStorageService googleCloudStorageService) {
         this.reportesRepository = reportesRepository;
         this.aiService = aiService;
         this.googleCloudStorageService = googleCloudStorageService;
     }
 
+    @Transactional
     public ReporteResponse createReporte(ReporteRequest reporteRequest, MultipartFile[] archivos) {
+        logger.info("Iniciando creación de reporte...");
+
         // Validaciones básicas
         if (reporteRequest.getTitulo() == null || reporteRequest.getTitulo().isEmpty()) {
             throw new ValidacionException("El título es obligatorio");
@@ -46,12 +52,15 @@ public class ReporteServiceImpl {
 
         // Subir archivos a Google Cloud Storage
         List<String> fileUrls = new ArrayList<>();
-        for (MultipartFile archivo : archivos) {
-            try {
-                String fileUrl = googleCloudStorageService.uploadFileToGCS(archivo);
-                fileUrls.add(fileUrl);
-            } catch (IOException e) {
-                throw new RuntimeException("Error uploading file to Google Cloud Storage", e);
+        if (archivos != null) {
+            for (MultipartFile archivo : archivos) {
+                try {
+                    String fileUrl = googleCloudStorageService.uploadFileToGCS(archivo);
+                    fileUrls.add(fileUrl);
+                    logger.info("Archivo subido con éxito: {}", fileUrl);
+                } catch (IOException e) {
+                    logger.error("Error subiendo archivo: {}", archivo.getOriginalFilename(), e);
+                }
             }
         }
 
@@ -62,10 +71,11 @@ public class ReporteServiceImpl {
         reporte.setResumenIA(resumenIA);
         reporte.setUbicacion(ubicacion);
         reporte.setFechaCreacion(LocalDateTime.now());
-        reporte.setArchivos(fileUrls);  // Suponiendo que tu entidad Reportes tiene un campo para las URLs
+        reporte.setArchivos(fileUrls);
 
         // Guardar en la base de datos
         Reportes savedReporte = reportesRepository.save(reporte);
+        logger.info("Reporte guardado en la base de datos con ID: {}", savedReporte.getId());
 
         // Mapear a DTO de respuesta
         ReporteResponse response = new ReporteResponse();
@@ -74,12 +84,10 @@ public class ReporteServiceImpl {
         response.setDescripcion(savedReporte.getDescripcion());
         response.setResumenIA(savedReporte.getResumenIA());
         response.setUbicacion(GeoUtils.convertPointToGeoJSON(savedReporte.getUbicacion()));
-        response.setArchivos(savedReporte.getArchivos());  // Incluir las URLs de los archivos en la respuesta
+        response.setArchivos(savedReporte.getArchivos());
 
         return response;
     }
 }
-
-
 
 
