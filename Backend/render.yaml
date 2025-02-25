@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: urbia-backend
+    runtime: java
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar target/urbia-0.0.1-SNAPSHOT.jar"
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: GCS_BUCKET_NAME
+        value: "bucket-urbia"
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false
+      - key: DATASOURCE_URL
+        fromDatabase: urbia-db
+      - key: DATASOURCE_USERNAME
+        fromDatabase: urbia-db
+      - key: DATASOURCE_PASSWORD
+        fromDatabase: urbia-db
