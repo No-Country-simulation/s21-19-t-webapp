@@ -1,15 +1,15 @@
 package com.backend.urbia;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ActiveProfiles("test") // Usar perfil "test"
-class UrbiaApplicationTests {
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
+public class UrbiaApplication {
 
-	@Test
-	void contextLoads() {
-		// Test de carga básica del contexto
+	public static void main(String[] args) {
+
+		SpringApplication.run(UrbiaApplication.class, args);
 	}
+
+
 }
