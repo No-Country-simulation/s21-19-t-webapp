@@ -71,3 +71,4 @@ public class Usuarios {
         this.reportes = reportes;
     }
 }
+
