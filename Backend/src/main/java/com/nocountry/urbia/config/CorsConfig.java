@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000","https://urbia.onrender.com/") // Cambia este valor según el dominio de tu frontend
+                .allowedOrigins("http://localhost:3000","https://urbia.onrender.com/","http://127.0.0.1:5500","https://prueba-post-reporte.vercel.app/") // Cambia este valor según el dominio de tu frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
