@@ -15,40 +15,43 @@ export default function ReportForm() {
   const [imagen, setImagen] = useState(null)
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     const reporteDTO = {
       titulo,
       descripcion,
       latitud,
       longitud,
       categoriaId: Number(categoriaId),
-      usuarioId: Number(usuarioId)
-    }
-
-    const formData = new FormData()
-    if (audio) formData.append('audio', audio)
-    if (imagen) formData.append('imagen', imagen)
-    formData.append(
-      'reporte',
-      new Blob([JSON.stringify(reporteDTO)], { type: 'application/json' })
-    )
-
+      usuarioId: Number(usuarioId),
+    };
+  
+    const formData = new FormData();
+    if (audio) formData.append("audio", audio);
+    if (imagen) formData.append("imagen", imagen);
+    formData.append("reporte", new Blob([JSON.stringify(reporteDTO)], { type: "application/json" }));
+  
     try {
-      const response = await fetch('https://urbia-back.onrender.com/api/reporte/combinado', {
-        method: 'POST',
-        body: formData
-      })
+      const response = await fetch("https://s21-19-t-webapp-o3vj.onrender.com/api/reporte/combinado", {
+        method: "POST",
+        body: formData,
+        credentials: "include", // Necesario si allowCredentials(true) en backend
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
       if (response.ok) {
-        const data = await response.json()
-        console.log(data)
+        const data = await response.json();
+        console.log("✅ Reporte enviado:", data);
       } else {
-        console.error('Error al enviar reporte', response.statusText)
+        console.error("❌ Error al enviar reporte", response.statusText);
       }
     } catch (error) {
-      console.error('Error', error)
+      console.error("❌ Error en la petición:", error);
     }
-  }
+  };
+  
 
   return (
     <form

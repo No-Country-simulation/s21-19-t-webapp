@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://urbia-back.onrender.com",
-  timeout: 8000,
+  baseURL: "https://s21-19-t-webapp-o3vj.onrender.com",
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
