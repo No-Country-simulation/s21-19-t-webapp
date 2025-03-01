@@ -6,8 +6,9 @@ import NewReportForm from '@/features/NewReportForm/NewReportForm';
 export default function AppRoutes() {
   return (
     <BrowserRouter>
-    <div className='absolute z-[9999]'>
+    <div className='absolute z-[9999] left-72'>
       <Menu />
+
       <NewReportForm />
 
     </div>

@@ -25,6 +25,7 @@ const useReportsStore = create(
           }
         },
 
+
         clearStorage: () => {
           localStorage.removeItem('reports-storage');
           set({ reports: [] });
