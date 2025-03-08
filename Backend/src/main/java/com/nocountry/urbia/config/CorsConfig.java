@@ -14,6 +14,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://urbia.onrender.com/",
                         "http://127.0.0.1:5500",
                         "https://prueba-post-reporte.vercel.app/",
+                        "https://s21-19-t-webapp-ek59.onrender.com/",
                         "https://urbia-bug.onrender.com/") // Cambia este valor según el dominio de tu frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
