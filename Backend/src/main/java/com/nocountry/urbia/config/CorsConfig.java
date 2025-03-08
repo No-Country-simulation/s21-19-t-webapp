@@ -10,17 +10,20 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                    // Local development
-                    "http://localhost:3000",
-                    "http://127.0.0.1:5500",
-                    
-                    // Production environments
-                    "https://urbia.onrender.com",
-                    "https://prueba-post-reporte.vercel.app",
-                    "https://s21-19-t-webapp-ek59.onrender.com/",
-                    "https://urbia-bug.onrender.com"
-                )
+        .allowedOrigins(
+            // Local development
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",  // Added localhost IP with port 3000
+            "http://127.0.0.1:5500",
+            "http://localhost:5173",
+            
+            // Production environments
+            "https://urbia.onrender.com",
+            "https://prueba-post-reporte.vercel.app",
+            "https://s21-19-t-webapp-ek59.onrender.com",
+            "https://urbia-bug.onrender.com",
+            "https://handsome-wisdom-production.up.railway.app"
+        )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders(
                     "Origin",
