@@ -2,6 +2,8 @@ package com.nocountry.urbia.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "reporte")
@@ -15,11 +17,11 @@ public class Reporte {
     @Column(name = "url_imagen")
     private String urlImagen;
 
-    // URL del  audio
+    // URL del audio
     @Column(name = "url_audio")
     private String urlAudio;
 
-    // URL del  video
+    // URL del video
     @Column(name = "url_video")
     private String urlVideo;
 
@@ -53,7 +55,12 @@ public class Reporte {
     @JoinColumn(name = "usuario_id")
     private Usuarios usuario;
 
+    // Relación con Reacciones: eliminación en cascada
+    @OneToMany(mappedBy = "reporte", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaccion> reacciones = new ArrayList<>();
+
     // Getters y Setters
+
     public Reporte() {
     }
 
@@ -145,10 +152,19 @@ public class Reporte {
         this.usuario = usuario;
     }
 
+    public String getDescripcionDespuesDeIa() {
+        return descripcionDespuesDeIa;
+    }
+
     public void setDescripcionDespuesDeIA(String descripcionMejorada) {
         this.descripcionDespuesDeIa = descripcionMejorada;
     }
-    public String getDescripcionDespuesDeIa() {
-        return descripcionDespuesDeIa;
+
+    public List<Reaccion> getReacciones() {
+        return reacciones;
+    }
+
+    public void setReacciones(List<Reaccion> reacciones) {
+        this.reacciones = reacciones;
     }
 }
