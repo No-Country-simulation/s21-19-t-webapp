@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class  AuthController {
@@ -30,6 +33,13 @@ public class  AuthController {
     public ResponseEntity<UsuarioResponse> registerUser(@RequestBody UsuarioRegistroRequest signUpRequest) {
         UsuarioResponse usuarioResponse = usuarioService.registerUser(signUpRequest);
         return new ResponseEntity<>(usuarioResponse, HttpStatus.CREATED);
+    }
+    
+    @GetMapping("/public")
+    public ResponseEntity<Map<String, String>> publicEndpoint() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Este es un endpoint público que no requiere autenticación");
+        return ResponseEntity.ok(response);
     }
 }
 

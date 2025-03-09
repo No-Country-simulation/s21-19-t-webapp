@@ -56,31 +56,21 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntryPoint))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/api/health",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                .authorizeHttpRequests(auth -> 
+                    auth.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/public").permitAll()
+                        .requestMatchers("/api/reporte/**").permitAll()  // Making all report endpoints public
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Add any other public endpoints here
                         .anyRequest().authenticated()
                 )
-
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo ->
-                                userInfo.userService(customOAuth2UserService)
-                        )
-                        .successHandler(oAuth2AuthenticationSuccessHandler)
-                );
-
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        
         http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        
         return http.build();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
