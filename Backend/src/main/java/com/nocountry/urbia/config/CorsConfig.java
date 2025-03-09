@@ -26,14 +26,7 @@ public class CorsConfig implements WebMvcConfigurer {
                     "https://handsome-wisdom-production.up.railway.app",
                     "https://api-urbia.up.railway.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders(
-                    "Authorization", 
-                    "Content-Type", 
-                    "Accept", 
-                    "Origin", 
-                    "X-Requested-With", 
-                    "Access-Control-Request-Method", 
-                    "Access-Control-Request-Headers")
+                .allowedHeaders("*")  // Allow all headers for now to fix CORS issues
                 .exposedHeaders(
                     "Access-Control-Allow-Origin", 
                     "Access-Control-Allow-Credentials")
