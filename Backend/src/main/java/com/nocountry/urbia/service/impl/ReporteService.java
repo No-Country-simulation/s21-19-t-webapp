@@ -198,6 +198,7 @@ public class ReporteService {
         return dto;
     }
 
+    // Eliminar todos los reportes (y sus reacciones en cascada)
     public void eliminarTodosLosReportes() {
         long totalReportes = reporteRepository.count();
         if (totalReportes > 0) {
