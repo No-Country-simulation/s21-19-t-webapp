@@ -22,44 +22,43 @@ public class GeminiService {
     private String geminiApiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
-
+    // For the text description improvement method
     public String mejorarDescripcion(String descripcion) {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
-
+    
         // Construir el prompt para mejorar la redacción
-        String prompt = "Como asistente de Urbia, mejora este reporte urbano. " +
-                "Reescribe la descripción de manera clara (entre 40-200 caracteres) basándote ÚNICAMENTE en la información proporcionada. " +
-                "Incluye: " +
-                "1. El problema principal 🔍 " +
-                "2. La ubicación mencionada 📍 " +
-                "3. Detalles relevantes ℹ️ " +
-                "Usa un tono amigable y añade 1-2 emojis relacionados. NO inventes información que no esté en el texto original. " +
+        String prompt = "Como asistente de Urbia, analiza y mejora este reporte urbano. " +
+                "Reescribe la descripción de manera formal y detallada (mínimo 100 caracteres, máximo 300). " +
+                "Estructura el contenido incluyendo: " +
+                "1. Descripción precisa del problema " +
+                "2. Ubicación específica " +
+                "3. Impacto en la comunidad " +
+                "Mantén un tono profesional y objetivo. " +
                 "Texto original: " + descripcion;
-
-        // Resto del código se mantiene igual
+    
         // Construir el JSON de la solicitud
         JSONObject part = new JSONObject();
         part.put("text", prompt);
-
+    
         JSONArray partsArray = new JSONArray();
         partsArray.put(part);
-
+    
         JSONObject contentObject = new JSONObject();
         contentObject.put("parts", partsArray);
-
+    
         JSONArray contentsArray = new JSONArray();
         contentsArray.put(contentObject);
-
+    
         JSONObject payload = new JSONObject();
         payload.put("contents", contentsArray);
-
+    
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
+    
         HttpEntity<String> requestEntity = new HttpEntity<>(payload.toString(), headers);
-
+    
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-
+    
         if (response.getStatusCode() == HttpStatus.OK) {
             JSONObject jsonResponse = new JSONObject(response.getBody());
             // Verificar si existe el array "candidates"
@@ -107,7 +106,7 @@ public class GeminiService {
             byte[] imageBytes = imageResponse.getBody();
             // Codificar la imagen a Base64 (sin saltos de línea)
             String encodedImage = Base64.getEncoder().encodeToString(imageBytes);
-
+    
             // Determinar el MIME type según la extensión de la URL (puedes ajustar este mecanismo)
             String mimeType = "image/jpeg"; // valor por defecto
             if (imageUrl.endsWith(".png")) {
@@ -115,48 +114,47 @@ public class GeminiService {
             } else if (imageUrl.endsWith(".gif")) {
                 mimeType = "image/gif";
             }
-
+    
             // Construir la parte de datos en línea (inline_data)
             JSONObject inlineData = new JSONObject();
             inlineData.put("mime_type", mimeType);
             inlineData.put("data", encodedImage);
-
+    
             JSONObject inlinePart = new JSONObject();
             inlinePart.put("inline_data", inlineData);
-
+    
             // Construir la parte de texto con la instrucción deseada
             JSONObject textPart = new JSONObject();
-            textPart.put("text", "Describe SOLO lo que ves en esta imagen para un reporte en Urbia 📱 " +
-                "Proporciona una descripción concisa (entre 40-200 caracteres) que incluya: " +
-                "1. El problema urbano visible 🔍 " +
-                "2. La ubicación o entorno que se observa " +
-                "3. Detalles concretos que se aprecian en la imagen " +
-                "Añade 1-2 emojis relevantes. NO inventes información que no puedas ver directamente en la imagen.");
-            textPart.put("text", "Describe el problema que se esta mostrando en la imagen , maximo 60 palabras"); // Puedes personalizar este prompt
-
+            textPart.put("text", "Analiza detalladamente la imagen y describe: " +
+                "1. El problema principal visible " +
+                "2. Las condiciones específicas observadas " +
+                "3. La gravedad de la situación " +
+                "4. Elementos relevantes del entorno " +
+                "Proporciona una descripción formal y técnica de mínimo 100 palabras.");
+    
             // Construir el arreglo de partes
             JSONArray partsArray = new JSONArray();
             partsArray.put(textPart);
             partsArray.put(inlinePart);
-
+    
             JSONObject contentObject = new JSONObject();
             contentObject.put("parts", partsArray);
-
+    
             JSONArray contentsArray = new JSONArray();
             contentsArray.put(contentObject);
-
+    
             JSONObject payload = new JSONObject();
             payload.put("contents", contentsArray);
-
+    
             // Usar el endpoint adecuado (en este ejemplo se usa gemini-1.5-flash)
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey;
-
+    
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> requestEntity = new HttpEntity<>(payload.toString(), headers);
-
+    
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-
+    
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
                 if (jsonResponse.has("candidates")) {
@@ -198,7 +196,7 @@ public class GeminiService {
             }
             byte[] audioBytes = audioResponse.getBody();
             int numBytes = audioBytes.length;
-
+    
             // 2. Determinar el MIME type (según la extensión; se asume "audio/mp3" por defecto)
             String mimeType = "audio/mp3";
             String lowerUrl = audioUrl.toLowerCase();
@@ -207,24 +205,24 @@ public class GeminiService {
             } else if (lowerUrl.endsWith(".ogg")) {
                 mimeType = "audio/ogg";
             }
-
+    
             // 3. Iniciar la sesión de carga usando la API de File
             String baseUrl = "https://generativelanguage.googleapis.com";
             String uploadStartUrl = baseUrl + "/upload/v1beta/files?key=" + geminiApiKey;
-
+    
             HttpHeaders startHeaders = new HttpHeaders();
             startHeaders.set("X-Goog-Upload-Protocol", "resumable");
             startHeaders.set("X-Goog-Upload-Command", "start");
             startHeaders.set("X-Goog-Upload-Header-Content-Length", String.valueOf(numBytes));
             startHeaders.set("X-Goog-Upload-Header-Content-Type", mimeType);
             startHeaders.setContentType(MediaType.APPLICATION_JSON);
-
+    
             // Payload de metadata para la carga (puedes ajustar el display_name según sea necesario)
             JSONObject startPayload = new JSONObject();
             JSONObject fileObj = new JSONObject();
             fileObj.put("display_name", "AUDIO");
             startPayload.put("file", fileObj);
-
+    
             HttpEntity<String> startEntity = new HttpEntity<>(startPayload.toString(), startHeaders);
             ResponseEntity<String> startResponse = restTemplate.exchange(uploadStartUrl, HttpMethod.POST, startEntity, String.class);
             String uploadUrl = startResponse.getHeaders().getFirst("x-goog-upload-url");
@@ -232,13 +230,13 @@ public class GeminiService {
                 System.err.println("Error: No se recibió URL de carga.");
                 return "";
             }
-
+    
             // 4. Subir los bytes del archivo al URL de carga obtenido
             HttpHeaders uploadHeaders = new HttpHeaders();
             uploadHeaders.set("Content-Length", String.valueOf(numBytes));
             uploadHeaders.set("X-Goog-Upload-Offset", "0");
             uploadHeaders.set("X-Goog-Upload-Command", "upload, finalize");
-
+    
             HttpEntity<byte[]> uploadEntity = new HttpEntity<>(audioBytes, uploadHeaders);
             ResponseEntity<String> uploadResponse = restTemplate.exchange(uploadUrl, HttpMethod.POST, uploadEntity, String.class);
             String uploadResponseBody = uploadResponse.getBody();
@@ -258,42 +256,43 @@ public class GeminiService {
                 System.err.println("Error: No se obtuvo file_uri en la respuesta de la carga.");
                 return "";
             }
-
+    
             // 5. Generar contenido usando el file_uri obtenido
             String generateUrl = baseUrl + "/v1beta/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey;
             HttpHeaders generateHeaders = new HttpHeaders();
             generateHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-            // Construir el payload para generar contenido
+    
+            // Construir el payload para generar contenido:
+            // Se envía una parte de texto (prompt) y otra con file_data
             JSONObject textPart = new JSONObject();
-            textPart.put("text", "Transcribe y resume SOLO el contenido del audio para un reporte en Urbia 🎧 " +
-                "Proporciona una descripción concisa (entre 40-200 caracteres) que incluya: " +
-                "1. El problema mencionado en el audio 🔍 " +
-                "2. La ubicación mencionada (si se indica) " +
-                "3. Detalles relevantes mencionados " +
-                "Añade 1-2 emojis relacionados. NO agregues información que no se mencione explícitamente en el audio.");
-            textPart.put("text", "Describe el audio en lenguaje español , maximo 50 palabras");
-
+            textPart.put("text", "Transcribe y analiza el contenido del audio. " +
+                "Proporciona una descripción formal que incluya: " +
+                "1. El problema principal mencionado " +
+                "2. Detalles específicos reportados " +
+                "3. Ubicación o referencias mencionadas " +
+                "4. Cualquier información adicional relevante " +
+                "La respuesta debe ser detallada y tener mínimo 100 palabras.");
+    
             JSONObject fileData = new JSONObject();
             fileData.put("mime_type", mimeType);
             fileData.put("file_uri", fileUri);
-
+    
             JSONObject fileDataPart = new JSONObject();
             fileDataPart.put("file_data", fileData);
-
+    
             JSONArray partsArray = new JSONArray();
             partsArray.put(textPart);
             partsArray.put(fileDataPart);
-
+    
             JSONObject contentObject = new JSONObject();
             contentObject.put("parts", partsArray);
-
+    
             JSONArray contentsArray = new JSONArray();
             contentsArray.put(contentObject);
-
+    
             JSONObject generatePayload = new JSONObject();
             generatePayload.put("contents", contentsArray);
-
+    
             HttpEntity<String> generateEntity = new HttpEntity<>(generatePayload.toString(), generateHeaders);
             ResponseEntity<String> generateResponse = restTemplate.exchange(generateUrl, HttpMethod.POST, generateEntity, String.class);
             if (generateResponse.getStatusCode() == HttpStatus.OK && generateResponse.getBody() != null) {
