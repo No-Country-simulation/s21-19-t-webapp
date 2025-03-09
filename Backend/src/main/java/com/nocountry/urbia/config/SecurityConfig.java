@@ -51,27 +51,43 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-            .csrf(csrf -> csrf.disable())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/public").permitAll()
-                    .requestMatchers("/api/reporte/**").permitAll()  // Making all report endpoints public
-                    .requestMatchers("/api/reporte/eliminar-reportes").permitAll()  // Explicitly making delete endpoint public
-                    .requestMatchers("/api/categorias/**").permitAll()  // Making all category endpoints public
-                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                    // Add any other public endpoints here
-                    .anyRequest().authenticated()
-            )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-    
-    http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-    
-    return http.build();
-}
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(
+                                        // Permitir el endpoint de login y el inicio del flujo OAuth2
+                                        "/login",
+                                        "/oauth2/authorization/**",
+                                        "/api/auth/login",
+                                        "/api/auth/register",
+                                        "/api/auth/public",
+                                        "/api/reporte/**",
+                                        "/api/reporte/eliminar-reportes",
+                                        "/api/categorias/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
+                                .anyRequest().authenticated()
+                )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint.userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                );
+
+        http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
