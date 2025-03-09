@@ -60,6 +60,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/public").permitAll()
                     .requestMatchers("/api/reporte/**").permitAll()  // Making all report endpoints public
+                    .requestMatchers("/api/reporte/eliminar-reportes").permitAll()  // Explicitly making delete endpoint public
                     .requestMatchers("/api/categorias/**").permitAll()  // Making all category endpoints public
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                     // Add any other public endpoints here
