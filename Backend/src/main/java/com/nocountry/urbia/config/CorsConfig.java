@@ -22,7 +22,6 @@ public class CorsConfig implements WebMvcConfigurer {
                     "https://urbia.onrender.com",
                     "https://prueba-post-reporte.vercel.app",
                     "https://s21-19-t-webapp-ek59.onrender.com",
-                    "https://urbia-bug.onrender.com",
                     "https://handsome-wisdom-production.up.railway.app",
                     "https://api-urbia.up.railway.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
