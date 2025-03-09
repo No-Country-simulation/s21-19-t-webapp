@@ -21,6 +21,8 @@ public class Usuarios {
 
     private String password;
 
+    private String avatarUrl;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reporte> reportes;
 
@@ -33,6 +35,14 @@ public class Usuarios {
     }
 
     // Getters y Setters
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
     public Long getId() {
         return id;
     }

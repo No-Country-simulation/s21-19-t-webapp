@@ -1,8 +1,6 @@
 package com.nocountry.urbia.config;
 
-import com.nocountry.urbia.security.JwtAuthEntryPoint;
-import com.nocountry.urbia.security.JwtAuthFilter;
-import com.nocountry.urbia.security.UserDetailsServiceImpl;
+import com.nocountry.urbia.security.*;
 import com.nocountry.urbia.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,13 +27,19 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
     private final JwtUtil jwtUtil;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Autowired
     public SecurityConfig(UserDetailsServiceImpl userDetailsService,
-                          JwtAuthEntryPoint jwtAuthEntryPoint,JwtUtil jwtUtil) {
+                          JwtAuthEntryPoint jwtAuthEntryPoint,JwtUtil jwtUtil,
+                          CustomOAuth2UserService customOAuth2UserService,
+                          OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.jwtUtil = jwtUtil;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
     }
 
     @Bean
@@ -62,9 +66,18 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
                 );
+
         http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
     }
 
@@ -72,7 +85,19 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Ajusta según tu frontend
+        configuration.setAllowedOrigins(Arrays.asList(
+               // Development environments
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                "http://127.0.0.1:5500",
+                "http://localhost:5173",
+
+                // Production environments
+                "https://urbia.onrender.com",
+                "https://prueba-post-reporte.vercel.app",
+                "https://s21-19-t-webapp-ek59.onrender.com",
+                "https://urbia-bug.onrender.com",
+                "https://handsome-wisdom-production.up.railway.app")); // Ajustar con frontend
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -80,4 +105,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }

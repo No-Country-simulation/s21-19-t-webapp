@@ -30,6 +30,10 @@ public class UsuarioServiceImpl {
         this.jwtUtil = jwtUtil;
     }
 
+    public Usuarios findByEmail(String email) {
+        return usuariosRepository.findByEmail(email);
+    }
+
     public JwtResponse authenticate(LoginRequest loginRequest) {
         Usuarios usuario = usuariosRepository.findByEmail(loginRequest.getEmail());
         if (usuario == null || !passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword())) {
@@ -47,7 +51,6 @@ public class UsuarioServiceImpl {
         usuario.setNombre(request.getNombre());
         usuario.setEmail(request.getEmail());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
-
         Usuarios savedUsuario = usuariosRepository.save(usuario);
         return new UsuarioResponse(savedUsuario.getId(), savedUsuario.getNombre(), savedUsuario.getEmail());
     }
@@ -65,5 +68,20 @@ public class UsuarioServiceImpl {
             responseList.add(new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail()));
         });
         return responseList;
+    }
+
+    // Metodo para registrar un usuario usando datos de OAuth2 (sin contraseña)
+    public Usuarios registerOAuthUser(String nombre, String email, String avatarUrl) {
+        Usuarios usuario = new Usuarios();
+        usuario.setNombre(nombre);
+        usuario.setEmail(email);
+        usuario.setPassword(""); // No se necesita contraseña para OAuth2
+        usuario.setAvatarUrl(avatarUrl);
+        return usuariosRepository.save(usuario);
+    }
+
+    // Metodo para actualizar datos del usuario (como el avatar)
+    public Usuarios updateUsuario(Usuarios usuario) {
+        return usuariosRepository.save(usuario);
     }
 }

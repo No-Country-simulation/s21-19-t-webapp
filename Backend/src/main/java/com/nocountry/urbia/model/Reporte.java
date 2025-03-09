@@ -19,7 +19,7 @@ public class Reporte {
     @Column(name = "url_audio")
     private String urlAudio;
 
-    // URL del  audio
+    // URL del  video
     @Column(name = "url_video")
     private String urlVideo;
 

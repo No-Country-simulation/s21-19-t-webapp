@@ -32,7 +32,7 @@ public class JwtUtil {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            // Aquí se podría loggear el error
+
         }
         return false;
     }
