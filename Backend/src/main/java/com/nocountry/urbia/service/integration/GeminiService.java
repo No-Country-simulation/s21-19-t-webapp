@@ -27,13 +27,16 @@ public class GeminiService {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
 
         // Construir el prompt para mejorar la redacción
-        String prompt = "Crea un reporte legible y conciso (máximo 300 caracteres) que resuma los " +
-                "hechos de forma integrada y clara, identificando el tema predominante y no incluyas datos " +
-                "no relacionados.(no se deben mostrar los datos no relacionados) " +
-                "Asegúrate de incluir las palabras clave necesarias para ubicar y resolver el problema." +
-                " importante :El reporte tambien debe estar escrito de manera continua y no especifiques de que entrada" +
-                "proviene cada dato " + descripcion;
+        String prompt = "Como asistente de Urbia, mejora este reporte urbano. " +
+                "Reescribe la descripción de manera clara (entre 40-200 caracteres) basándote ÚNICAMENTE en la información proporcionada. " +
+                "Incluye: " +
+                "1. El problema principal 🔍 " +
+                "2. La ubicación mencionada 📍 " +
+                "3. Detalles relevantes ℹ️ " +
+                "Usa un tono amigable y añade 1-2 emojis relacionados. NO inventes información que no esté en el texto original. " +
+                "Texto original: " + descripcion;
 
+        // Resto del código se mantiene igual
         // Construir el JSON de la solicitud
         JSONObject part = new JSONObject();
         part.put("text", prompt);
@@ -123,6 +126,12 @@ public class GeminiService {
 
             // Construir la parte de texto con la instrucción deseada
             JSONObject textPart = new JSONObject();
+            textPart.put("text", "Describe SOLO lo que ves en esta imagen para un reporte en Urbia 📱 " +
+                "Proporciona una descripción concisa (entre 40-200 caracteres) que incluya: " +
+                "1. El problema urbano visible 🔍 " +
+                "2. La ubicación o entorno que se observa " +
+                "3. Detalles concretos que se aprecian en la imagen " +
+                "Añade 1-2 emojis relevantes. NO inventes información que no puedas ver directamente en la imagen.");
             textPart.put("text", "Describe el problema que se esta mostrando en la imagen , maximo 60 palabras"); // Puedes personalizar este prompt
 
             // Construir el arreglo de partes
@@ -255,9 +264,14 @@ public class GeminiService {
             HttpHeaders generateHeaders = new HttpHeaders();
             generateHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-            // Construir el payload para generar contenido:
-            // Se envía una parte de texto (prompt) y otra con file_data
+            // Construir el payload para generar contenido
             JSONObject textPart = new JSONObject();
+            textPart.put("text", "Transcribe y resume SOLO el contenido del audio para un reporte en Urbia 🎧 " +
+                "Proporciona una descripción concisa (entre 40-200 caracteres) que incluya: " +
+                "1. El problema mencionado en el audio 🔍 " +
+                "2. La ubicación mencionada (si se indica) " +
+                "3. Detalles relevantes mencionados " +
+                "Añade 1-2 emojis relacionados. NO agregues información que no se mencione explícitamente en el audio.");
             textPart.put("text", "Describe el audio en lenguaje español , maximo 50 palabras");
 
             JSONObject fileData = new JSONObject();
