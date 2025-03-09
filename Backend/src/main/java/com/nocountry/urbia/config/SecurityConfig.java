@@ -51,27 +51,26 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> 
-                    auth.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/public").permitAll()
-                        .requestMatchers("/api/reporte/**").permitAll()  // Making all report endpoints public
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Add any other public endpoints here
-                        .anyRequest().authenticated()
-                )
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        
-        http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-        
-        return http.build();
-    }
-
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+            .csrf(csrf -> csrf.disable())
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> 
+                auth.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/public").permitAll()
+                    .requestMatchers("/api/reporte/**").permitAll()  // Making all report endpoints public
+                    .requestMatchers("/api/categorias/**").permitAll()  // Making all category endpoints public
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                    // Add any other public endpoints here
+                    .anyRequest().authenticated()
+            )
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    
+    http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+    
+    return http.build();
+}
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
