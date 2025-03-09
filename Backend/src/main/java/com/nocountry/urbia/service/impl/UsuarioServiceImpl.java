@@ -52,20 +52,20 @@ public class UsuarioServiceImpl {
         usuario.setEmail(request.getEmail());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         Usuarios savedUsuario = usuariosRepository.save(usuario);
-        return new UsuarioResponse(savedUsuario.getId(), savedUsuario.getNombre(), savedUsuario.getEmail());
+        return new UsuarioResponse(savedUsuario.getId(), savedUsuario.getNombre(), savedUsuario.getEmail(), usuario.getAvatarUrl());
     }
 
     // Métodos adicionales para gestión de usuarios
     public UsuarioResponse getUserById(Long id) {
         Usuarios usuario = usuariosRepository.findById(id)
                 .orElseThrow(() -> new ValidacionException("Usuario no encontrado"));
-        return new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail());
+        return new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getAvatarUrl());
     }
 
     public List<UsuarioResponse> getAllUsers() {
         List<UsuarioResponse> responseList = new ArrayList<>();
         usuariosRepository.findAll().forEach(usuario -> {
-            responseList.add(new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail()));
+            responseList.add(new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getAvatarUrl()));
         });
         return responseList;
     }
