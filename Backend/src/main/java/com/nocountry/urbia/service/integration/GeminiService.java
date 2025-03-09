@@ -27,11 +27,13 @@ public class GeminiService {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
     
         // Construir el prompt para mejorar la redacción
-        String prompt = "Eres un asistente amigable de Urbia, la app con la rana que ayuda a mejorar la ciudad. " +
-                "Reescribe este reporte de manera clara y conversacional (máximo 300 caracteres). " +
-                "Destaca el problema principal y su ubicación. " +
-                "Usa un tono cercano pero informativo, como si estuvieras contándole a un vecino. " +
-                "No incluyas información irrelevante y asegúrate que sea fácil de entender. " +
+        String prompt = "Como asistente de Urbia, analiza y mejora este reporte urbano. " +
+                "Reescribe la descripción de manera formal y detallada (mínimo 100 caracteres, máximo 300). " +
+                "Estructura el contenido incluyendo: " +
+                "1. Descripción precisa del problema " +
+                "2. Ubicación específica " +
+                "3. Impacto en la comunidad " +
+                "Mantén un tono profesional y objetivo. " +
                 "Texto original: " + descripcion;
     
         // Construir el JSON de la solicitud
@@ -123,7 +125,12 @@ public class GeminiService {
     
             // Construir la parte de texto con la instrucción deseada
             JSONObject textPart = new JSONObject();
-            textPart.put("text", "Describe el problema que se esta mostrando en la imagen , maximo 60 palabras"); // Puedes personalizar este prompt
+            textPart.put("text", "Analiza detalladamente la imagen y describe: " +
+                "1. El problema principal visible " +
+                "2. Las condiciones específicas observadas " +
+                "3. La gravedad de la situación " +
+                "4. Elementos relevantes del entorno " +
+                "Proporciona una descripción formal y técnica de mínimo 100 palabras.");
     
             // Construir el arreglo de partes
             JSONArray partsArray = new JSONArray();
@@ -258,7 +265,13 @@ public class GeminiService {
             // Construir el payload para generar contenido:
             // Se envía una parte de texto (prompt) y otra con file_data
             JSONObject textPart = new JSONObject();
-            textPart.put("text", "Describe el audio en lenguaje español , maximo 50 palabras");
+            textPart.put("text", "Transcribe y analiza el contenido del audio. " +
+                "Proporciona una descripción formal que incluya: " +
+                "1. El problema principal mencionado " +
+                "2. Detalles específicos reportados " +
+                "3. Ubicación o referencias mencionadas " +
+                "4. Cualquier información adicional relevante " +
+                "La respuesta debe ser detallada y tener mínimo 100 palabras.");
     
             JSONObject fileData = new JSONObject();
             fileData.put("mime_type", mimeType);
