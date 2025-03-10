@@ -30,7 +30,6 @@ public class GeminiService {
         // Construir el prompt para mejorar la redacción
         String prompt = "Eres un asistente amigable de Urbia, la app con la rana que ayuda a mejorar la ciudad. " +
                 "Reescribe este reporte de manera clara y conversacional (máximo 300 caracteres). " +
-                "Destaca el problema principal y su ubicación. " +
                 "Usa un tono cercano pero informativo, como si estuvieras contándole a un vecino. " +
                 "No incluyas información irrelevante y asegúrate que sea fácil de entender. " + "basado en la siguiente información:\n" +
                 "Título: " + titulo + "\n" +
