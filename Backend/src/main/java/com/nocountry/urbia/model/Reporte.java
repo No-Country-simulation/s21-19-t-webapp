@@ -109,8 +109,7 @@ public class Reporte {
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+        this.descripcion = descripcion;}
 
     public LocalDateTime getFechaHora() {
         return fechaHora;
