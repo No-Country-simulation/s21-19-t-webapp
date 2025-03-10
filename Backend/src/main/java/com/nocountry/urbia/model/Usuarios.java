@@ -28,10 +28,11 @@ public class Usuarios {
 
     public Usuarios() {}
 
-    public Usuarios(String nombre, String email, String password) {
+    public Usuarios(String nombre, String email, String password, String avatarUrl) {
         this.nombre = nombre;
         this.email = email;
         this.password = password;
+        this.avatarUrl = avatarUrl;
     }
 
     // Getters y Setters

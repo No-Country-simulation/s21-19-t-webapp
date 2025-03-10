@@ -22,8 +22,9 @@ public class GeminiService {
     private String geminiApiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    // For the text description improvement method
-    public String mejorarDescripcion(String descripcion) {
+
+
+    public String mejorarDescripcion(String descripcion, String titulo, String urlImagen, String urlAudio) {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
     
         // Construir el prompt para mejorar la redacción
@@ -31,9 +32,23 @@ public class GeminiService {
                 "Reescribe este reporte de manera clara y conversacional (máximo 300 caracteres). " +
                 "Destaca el problema principal y su ubicación. " +
                 "Usa un tono cercano pero informativo, como si estuvieras contándole a un vecino. " +
-                "No incluyas información irrelevante y asegúrate que sea fácil de entender. " +
-                "Texto original: " + descripcion;
-    
+                "No incluyas información irrelevante y asegúrate que sea fácil de entender. " + "basado en la siguiente información:\n" +
+                "Título: " + titulo + "\n" +
+                "Texto original: " + descripcion + "\n";
+
+        // Si existe imagen, la menciona como complemento
+        if (urlImagen != null && !urlImagen.isEmpty()) {
+            prompt += "Imagen adjunta disponible. ";
+        }
+
+        // Si existe audio, la menciona también
+        if (urlAudio != null && !urlAudio.isEmpty()) {
+            prompt += "Audio adjunto disponible. ";
+        }
+
+        prompt += "Utiliza la imagen y el audio solo para complementar el texto original y enriquecer el análisis textual, "
+                + "unificando la información sin distinguir de dónde provienen esos datos.";
+
         // Construir el JSON de la solicitud
         JSONObject part = new JSONObject();
         part.put("text", prompt);
@@ -309,8 +324,6 @@ public class GeminiService {
         }
         return "";
     }
-
-
 
 
 }

@@ -122,7 +122,11 @@ public class ReporteService {
         Reporte reporteGuardado = reporteRepository.save(reporte);
 
         // Llamada a Gemini IA para mejorar la descripción
-        String descripcionMejorada = geminiService.mejorarDescripcion(reporteGuardado.getDescripcion());
+        String descripcionMejorada = geminiService.mejorarDescripcion(
+                reporteGuardado.getDescripcion(),
+                reporteGuardado.getTitulo(),
+                reporteGuardado.getUrlImagen(),
+                reporteGuardado.getUrlAudio());
         reporteGuardado.setDescripcionDespuesDeIA(descripcionMejorada);
 
         // Actualizar el reporte con la descripción mejorada
