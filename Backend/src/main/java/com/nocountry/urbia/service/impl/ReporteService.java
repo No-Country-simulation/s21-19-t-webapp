@@ -141,7 +141,77 @@ public class ReporteService {
         return reportes.stream().map(this::mapearDTO).collect(Collectors.toList());
     }
 
-    // Actualizar reporte
+    // Actualización combinada de reporte (PUT con archivos)
+    public ResponseEntity<ReporteDTO> actualizarReporteConImagenIA(Long id, MultipartFile audio, MultipartFile imagen, ReporteDTO reporteDTO) {
+        Reporte reporte = reporteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reporte no encontrado"));
+
+        String detallesArchivo = "";
+
+        // Procesar el archivo de audio, si se envía
+        if (audio != null && !audio.isEmpty()) {
+            String audioContentType = audio.getContentType();
+            if (audioContentType == null || !audioContentType.startsWith("audio/")) {
+                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+            String audioUrl = s3Service.uploadFile(audio);
+            reporteDTO.setUrlAudio(audioUrl);
+            String detalleAudio = geminiService.analizarAudioPublica(audioUrl);
+            if (!detalleAudio.isEmpty()) {
+                detallesArchivo += "Audio: " + detalleAudio + "\n";
+            }
+            reporte.setUrlAudio(audioUrl);
+        }
+
+        // Procesar el archivo de imagen, si se envía
+        if (imagen != null && !imagen.isEmpty()) {
+            String imagenContentType = imagen.getContentType();
+            if (imagenContentType == null || !imagenContentType.startsWith("image/")) {
+                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+            String imageUrl = s3Service.uploadFile(imagen);
+            reporteDTO.setUrlImagen(imageUrl);
+            String detalleImagen = geminiService.analizarImagenPublica(imageUrl);
+            if (!detalleImagen.isEmpty()) {
+                detallesArchivo += "Imagen: " + detalleImagen + "\n";
+            }
+            reporte.setUrlImagen(imageUrl);
+        }
+
+        // Actualizar datos del reporte
+        reporte.setTitulo(reporteDTO.getTitulo());
+        String descripcionConTitulo = "Título: " + reporteDTO.getTitulo() + "\nDescripción: " + reporteDTO.getDescripcion();
+        reporte.setDescripcion(descripcionConTitulo + "\nDetalles IA: " + detallesArchivo);
+        reporte.setLatitud(reporteDTO.getLatitud());
+        reporte.setLongitud(reporteDTO.getLongitud());
+
+        if (reporteDTO.getCategoriaId() != null) {
+            Categoria categoria = categoriaRepository.findById(reporteDTO.getCategoriaId())
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            reporte.setCategoria(categoria);
+        }
+
+        if (reporteDTO.getUsuarioId() != null) {
+            Usuarios usuario = usuarioRepository.findById(reporteDTO.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            reporte.setUsuario(usuario);
+        }
+
+        Reporte reporteActualizado = reporteRepository.save(reporte);
+
+        // Llamada a Gemini IA para mejorar la descripción actualizada
+        String descripcionMejorada = geminiService.mejorarDescripcion(
+                reporteActualizado.getDescripcion(),
+                reporteActualizado.getTitulo(),
+                reporteActualizado.getUrlImagen(),
+                reporteActualizado.getUrlAudio());
+        reporteActualizado.setDescripcionDespuesDeIA(descripcionMejorada);
+
+        reporteActualizado = reporteRepository.save(reporteActualizado);
+        return new ResponseEntity<>(mapearDTO(reporteActualizado), HttpStatus.OK);
+    }
+
+    // Actualización sin archivos (mantiene la funcionalidad original)
     public ReporteDTO actualizarReporte(Long id, ReporteDTO reporteDTO) {
         Reporte reporte = reporteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reporte no encontrado"));
@@ -183,7 +253,6 @@ public class ReporteService {
     }
 
     // Método para mapear la entidad Reporte a ReporteDTO
-
     private ReporteDTO mapearDTO(Reporte reporte) {
         ReporteDTO dto = new ReporteDTO();
         dto.setId(reporte.getId());

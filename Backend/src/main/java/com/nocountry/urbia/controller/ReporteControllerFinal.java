@@ -1,6 +1,5 @@
 package com.nocountry.urbia.controller;
 
-
 import com.nocountry.urbia.dto.request.ReporteDTO;
 import com.nocountry.urbia.service.integration.S3Service;
 import com.nocountry.urbia.service.impl.ReporteService;
@@ -41,11 +40,14 @@ public class ReporteControllerFinal {
         return ResponseEntity.ok(reportes);
     }
 
-    // Endpoint para actualizar un reporte
-    @PutMapping("{id}")
-    public ResponseEntity<ReporteDTO> actualizarReporte(@PathVariable Long id, @RequestBody ReporteDTO reporteDTO) {
-        ReporteDTO actualizado = reporteService.actualizarReporte(id, reporteDTO);
-        return ResponseEntity.ok(actualizado);
+    // Endpoint para actualizar un reporte con archivos (audio e imagen)
+    @PutMapping(value = "{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<ReporteDTO> actualizarReporte(
+            @PathVariable Long id,
+            @RequestPart(value = "audio", required = false) MultipartFile audio,
+            @RequestPart(value = "imagen", required = false) MultipartFile imagen,
+            @RequestPart("reporte") ReporteDTO reporteDTO) {
+        return reporteService.actualizarReporteConImagenIA(id, audio, imagen, reporteDTO);
     }
 
     // Endpoint para eliminar todos los reportes
