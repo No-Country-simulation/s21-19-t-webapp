@@ -29,22 +29,25 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Autowired
     public SecurityConfig(UserDetailsServiceImpl userDetailsService,
                           JwtAuthEntryPoint jwtAuthEntryPoint,JwtUtil jwtUtil,
                           CustomOAuth2UserService customOAuth2UserService,
-                          OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler) {
+                          OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
+                          TokenBlacklistService tokenBlacklistService) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.jwtUtil = jwtUtil;
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Bean
     public JwtAuthFilter jwtAuthFilter() {
-        return new JwtAuthFilter(jwtUtil, userDetailsService);
+        return new JwtAuthFilter(jwtUtil, userDetailsService, tokenBlacklistService);
     }
 
     @Bean

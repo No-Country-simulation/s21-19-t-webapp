@@ -22,13 +22,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     // Constructor para inyección de dependencias
-    public JwtAuthFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
-        if (jwtUtil == null || userDetailsService == null) {
-            throw new IllegalArgumentException("jwtUtil y userDetailsService no pueden ser nulos");
-        }this.jwtUtil = jwtUtil;
+    public JwtAuthFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, TokenBlacklistService tokenBlacklistService) {
+        if (jwtUtil == null || userDetailsService == null|| tokenBlacklistService == null) {
+            throw new IllegalArgumentException("Las dependencias no pueden ser nulas");
+        }
+        this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
@@ -43,15 +46,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtil.validateToken(jwt)) {
-                String email = jwtUtil.getUsernameFromToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            String token = parseJwt(request);
+            if (token != null && jwtUtil.validateToken(token)) {
+                if (!tokenBlacklistService.isTokenBlacklisted(token)) {
+                    String email = jwtUtil.getUsernameFromToken(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         } catch (Exception e) {
             logger.error("No se pudo establecer la autenticación del usuario: {}", e.getMessage());
