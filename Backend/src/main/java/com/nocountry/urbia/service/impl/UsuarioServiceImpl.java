@@ -80,8 +80,30 @@ public class UsuarioServiceImpl {
         return usuariosRepository.save(usuario);
     }
 
-    // Metodo para actualizar datos del usuario (como el avatar)
+    // Metodo para actualizar datos del usuario de google (como el avatar)
     public Usuarios updateUsuario(Usuarios usuario) {
         return usuariosRepository.save(usuario);
+    }
+
+    // Metodo para eliminar un usuario
+    public void deleteUser(Long id) {
+        Usuarios usuario = usuariosRepository.findById(id)
+                .orElseThrow(() -> new ValidacionException("Usuario no encontrado"));
+        usuariosRepository.delete(usuario);
+    }
+
+    // Metodo para actualizar un usuario, ya sea nombre o password
+    public UsuarioResponse updateUser(Long id, UsuarioRegistroRequest updateRequest) {
+        Usuarios usuario = usuariosRepository.findById(id)
+                .orElseThrow(() -> new ValidacionException("Usuario no encontrado"));
+
+        usuario.setNombre(updateRequest.getNombre());
+        // Si se envía un password nuevo (no vacío), se actualiza
+        if (updateRequest.getPassword() != null && !updateRequest.getPassword().trim().isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+        }
+
+        Usuarios usuarioActualizado = usuariosRepository.save(usuario);
+        return new UsuarioResponse(usuarioActualizado.getId(), usuarioActualizado.getNombre(), usuarioActualizado.getEmail(), usuarioActualizado.getAvatarUrl());
     }
 }

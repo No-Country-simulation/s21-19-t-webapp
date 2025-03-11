@@ -1,5 +1,6 @@
 package com.nocountry.urbia.controller;
 
+import com.nocountry.urbia.dto.request.UsuarioRegistroRequest;
 import com.nocountry.urbia.dto.response.UsuarioResponse;
 import com.nocountry.urbia.service.impl.UsuarioServiceImpl;
 import java.util.List;
@@ -30,5 +31,20 @@ public class UsuariosController {
     public ResponseEntity<UsuarioResponse> getUserById(@PathVariable Long id) {
         UsuarioResponse usuario = usuarioService.getUserById(id);
         return ResponseEntity.ok(usuario);
+    }
+
+    // Endpoint para actualizar un usuario
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> updateUser(@PathVariable Long id,
+                                                      @RequestBody UsuarioRegistroRequest updateRequest) {
+        UsuarioResponse updatedUser = usuarioService.updateUser(id, updateRequest);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // Endpoint para eliminar un usuario
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        usuarioService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
