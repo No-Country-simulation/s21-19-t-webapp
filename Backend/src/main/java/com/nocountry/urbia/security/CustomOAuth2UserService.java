@@ -41,15 +41,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             usuario = new Usuarios();
             usuario.setEmail(email);
             usuario.setNombre(name);
-
             usuario.setPassword("");
-            // Si tienes un campo para avatar, puedes asignarlo:
-            // usuario.setAvatarUrl(avatarUrl);
+            usuario.setAvatarUrl(avatarUrl);
             usuario = usuariosRepository.save(usuario);
         } else {
 
             usuario.setNombre(name);
-            // usuario.setAvatarUrl(avatarUrl);
+            usuario.setAvatarUrl(avatarUrl);
             usuario = usuariosRepository.save(usuario);
         }
 

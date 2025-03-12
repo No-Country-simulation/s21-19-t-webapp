@@ -30,11 +30,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        // Recuperar el usuario autenticado a través de OAuth2
+
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = oauth2User.getAttributes();
 
-        // Extraer los atributos relevantes de la respuesta de Google:
+
         String email = (String) attributes.get("email");
         String nombre = (String) attributes.get("name");
         String avatarUrl = (String) attributes.get("picture");
@@ -54,19 +54,9 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         // Generar token JWT usando el usuario obtenido/registrado
         String token = jwtUtil.generateToken(usuario);
 
+        String redirectUrl = "https://urbia.onrender.com/auth/callback?token=" + token;
 
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("token", token);
-        responseBody.put("type", "Bearer");
-        responseBody.put("email", email);
-        responseBody.put("nombre", nombre);
-        responseBody.put("avatar", avatarUrl);
-
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_OK);
-
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getOutputStream(), responseBody);
+        response.sendRedirect(redirectUrl);
     }
+
 }

@@ -11,4 +11,6 @@ public class LoginController {
         // Redirige al flujo de autenticación de Google
         return "redirect:/oauth2/authorization/google";
     }
+
+
 }

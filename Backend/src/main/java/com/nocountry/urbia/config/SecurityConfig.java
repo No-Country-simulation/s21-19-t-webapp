@@ -30,19 +30,22 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final TokenBlacklistService tokenBlacklistService;
+    private final OAuth2AuthenticationSuccessHandler successHandler;
 
     @Autowired
     public SecurityConfig(UserDetailsServiceImpl userDetailsService,
                           JwtAuthEntryPoint jwtAuthEntryPoint,JwtUtil jwtUtil,
                           CustomOAuth2UserService customOAuth2UserService,
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          TokenBlacklistService tokenBlacklistService) {
+                          TokenBlacklistService tokenBlacklistService,
+                          OAuth2AuthenticationSuccessHandler successHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.jwtUtil = jwtUtil;
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.tokenBlacklistService = tokenBlacklistService;
+        this.successHandler = successHandler;
     }
 
     @Bean
@@ -64,17 +67,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
                                         // Permitir el endpoint de login y el inicio del flujo OAuth2
+
                                         "/login",
                                         "/oauth2/authorization/**",
+                                        "/oauth2/**",
+                                        "/oauth2/callback/**",
                                         "/api/auth/login",
                                         "/api/auth/register",
                                         "/api/auth/public",
+                                        "/api/auth/**",
                                         "/api/reporte/**",
                                         "/api/reporte/eliminar-reportes",
                                         "/api/categorias/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
-                                        "/swagger-ui.html"
+                                        "/swagger-ui.html",
+                                        "/", "/public/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
