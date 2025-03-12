@@ -3,12 +3,12 @@ import { persist } from "zustand/middleware";
 import { login as loginRequest } from "../api/auth/login";
 import { register as registerRequest } from "../api/auth/register";
 import { logout as logoutRequest } from "../api/auth/logout";
+import { jwtDecode } from "jwt-decode"; // You'll need to install this package
 
 export const useUserAuth = create(
   persist(
     (set) => ({
       user: null,
-      // Add this to your useUserAuth store if it doesn't already exist
       setUser: (userData) => {
         set({ user: userData });
       },
@@ -21,8 +21,36 @@ export const useUserAuth = create(
           ? 'https://urbia.onrender.com'
           : 'http://localhost:3000';
         
-        // Redirigir a la URL de autenticación de Google
-        window.location.href = `https://api-urbia.up.railway.app/api/auth/login/google?redirect_uri=${encodeURIComponent(frontendBaseUrl)}`;
+        // Redirigir a la URL de autenticación de Google con el endpoint correcto
+        window.location.href = `https://api-urbia.up.railway.app/oauth2/authorization/google?redirect_uri=${encodeURIComponent(frontendBaseUrl + '/auth/callback')}`;
+      },
+      // Add this new method to handle the callback
+      handleGoogleCallback: (token) => {
+        if (token) {
+          try {
+            // Decode the JWT token
+            const decodedToken = jwtDecode(token);
+            
+            // Save token to localStorage
+            localStorage.setItem('token', token);
+            
+            // Set user data from decoded token
+            set({
+              user: {
+                id: decodedToken.sub || decodedToken.id,
+                name: decodedToken.name || decodedToken.nombre,
+                email: decodedToken.email,
+                avatar: decodedToken.avatar || null,
+              },
+            });
+            
+            return true;
+          } catch (error) {
+            console.error("Error decoding token:", error);
+            return false;
+          }
+        }
+        return false;
       },
       login: async (email, password) => {
         try {
