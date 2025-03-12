@@ -21,11 +21,8 @@ export const useUserAuth = create(
           ? 'https://urbia.onrender.com'
           : 'http://localhost:3000';
         
-        // Incluir información sobre el origen en la solicitud
-        const origin = window.location.hostname;
-        
         // Redirigir a la URL de autenticación de Google
-        window.location.href = `https://api-urbia.up.railway.app/oauth2/authorization/google?redirect_uri=${encodeURIComponent(frontendBaseUrl)}&origin=${origin}`;
+        window.location.href = `https://api-urbia.up.railway.app/api/auth/login/google?redirect_uri=${encodeURIComponent(frontendBaseUrl)}`;
       },
       login: async (email, password) => {
         try {
