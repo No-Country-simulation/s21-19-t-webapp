@@ -54,7 +54,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         // Generar token JWT usando el usuario obtenido/registrado
         String token = jwtUtil.generateToken(usuario);
 
-        String redirectUrl = "https://urbia.onrender.com/auth/callback?token=" + token;
+        String redirectUrl = "https://urbia.onrender.com/#/auth/callback?token=" + token;
 
         response.sendRedirect(redirectUrl);
     }

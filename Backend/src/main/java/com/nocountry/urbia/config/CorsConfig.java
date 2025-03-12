@@ -28,7 +28,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")  // Allow all headers for now to fix CORS issues
                 .exposedHeaders(
                     "Access-Control-Allow-Origin", 
-                    "Access-Control-Allow-Credentials")
+                    "Access-Control-Allow-Credentials",
+                        "Authorization")
                 .allowCredentials(true)
                 .maxAge(3600); // Cache preflight requests for 1 hour
     }
