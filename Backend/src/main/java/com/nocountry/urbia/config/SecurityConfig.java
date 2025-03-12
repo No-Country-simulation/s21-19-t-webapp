@@ -59,24 +59,45 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/public", "/oauth2/**", "/login/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth2 -> oauth2
-                .loginPage("/login")
-                .defaultSuccessUrl("/oauth2/callback/google", true)
-                .userInfoEndpoint(userInfo -> userInfo
-                    .userService(customOAuth2UserService)
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(
+                                        // Permitir el endpoint de login y el inicio del flujo OAuth2
+
+                                        "/login",
+                                        "/oauth2/authorization/**",
+                                        "/oauth2/**",
+                                        "/oauth2/callback/**",
+                                        "/api/auth/login",
+                                        "/api/auth/register",
+                                        "/api/auth/public",
+                                        "/api/auth/**",
+                                        "/api/reporte/**",
+                                        "/api/usuarios/**",
+                                        "/api/reporte/eliminar-reportes",
+                                        "/api/categorias/**",
+                                        "/api/auth/exchange",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/", "/public/**"
+                                ).permitAll()
+                                .anyRequest().authenticated()
                 )
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-            )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-    
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint.userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                );
+
         http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-    
+
         return http.build();
     }
 
