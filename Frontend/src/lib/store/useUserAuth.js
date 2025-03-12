@@ -22,14 +22,17 @@ export const useUserAuth = create(
           : 'http://localhost:3000';
         
         // Redirigir a la URL de autenticación de Google con el endpoint correcto
-        window.location.href = `https://api-urbia.up.railway.app/oauth2/authorization/google?redirect_uri=${encodeURIComponent(frontendBaseUrl + '/auth/callback')}`;
+        window.location.href = `https://api-urbia.up.railway.app/oauth2/authorization/google?redirect_uri=${encodeURIComponent(frontendBaseUrl + '/#/auth/callback')}`;
       },
-      // Add this new method to handle the callback
+      // Improved method to handle the callback
       handleGoogleCallback: (token) => {
         if (token) {
           try {
+            console.log("Processing token:", token);
+            
             // Decode the JWT token
             const decodedToken = jwtDecode(token);
+            console.log("Decoded token:", decodedToken);
             
             // Save token to localStorage
             localStorage.setItem('token', token);
@@ -38,8 +41,8 @@ export const useUserAuth = create(
             set({
               user: {
                 id: decodedToken.sub || decodedToken.id,
-                name: decodedToken.name || decodedToken.nombre,
-                email: decodedToken.email,
+                name: decodedToken.name || decodedToken.nombre || decodedToken.sub.split('@')[0],
+                email: decodedToken.sub || decodedToken.email,
                 avatar: decodedToken.avatar || null,
               },
             });

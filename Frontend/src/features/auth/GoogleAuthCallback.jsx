@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useUserAuth } from "@/lib/store/useUserAuth";
 import { toast } from "sonner";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
@@ -14,15 +14,40 @@ export default function GoogleAuthCallback() {
   useEffect(() => {
     const processCallback = async () => {
       console.log("✅ GoogleAuthCallback montado");
+      console.log("📍 Location:", location);
 
+      // Extract token from URL
+      let token = null;
+      
+      // First try from regular query params
       const params = new URLSearchParams(location.search);
-      const token = params.get("token");
+      token = params.get("token");
+      
+      // If not found, try to extract from hash
+      if (!token && location.hash) {
+        console.log("🔍 Checking hash for token:", location.hash);
+        
+        // Try different hash formats
+        if (location.hash.includes('?token=')) {
+          // Format: #/auth/callback?token=xyz
+          const hashPart = location.hash.split('?token=')[1];
+          if (hashPart) {
+            token = hashPart.split('&')[0]; // In case there are other params
+          }
+        } else if (location.hash.includes('/auth/callback?token=')) {
+          // Format: #/auth/callback?token=xyz
+          const hashPart = location.hash.split('/auth/callback?token=')[1];
+          if (hashPart) {
+            token = hashPart.split('&')[0]; // In case there are other params
+          }
+        }
+      }
 
-      console.log("🔑 Token recibido:", token);
+      console.log("🔑 Token extraído:", token);
 
       if (!token) {
-        console.error("❌ No se recibió el token en la URL");
-        setError("No se recibió el token de autenticación.");
+        console.error("❌ No se pudo extraer el token de la URL");
+        setError("No se recibió el token de autenticación o no se pudo extraer de la URL.");
         setLoading(false);
         return;
       }

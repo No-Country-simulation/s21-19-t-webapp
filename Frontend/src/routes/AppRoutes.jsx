@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, HashRouter } from 'react-router-dom';
 import HomePage from '@/features/home/pages/HomePage';
 import Menu from '@/components/layout/Menu';
 import CleanReportForm from '@/features/reports/form/CleanReportForm';
@@ -14,7 +14,7 @@ function RouteLogger() {
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
+    <HashRouter>
           <RouteLogger />
       <div className='absolute z-[9999]'>
         <Menu />
@@ -27,6 +27,6 @@ export default function AppRoutes() {
         <Route path='/' element={<HomePage />} />
         {/* Otras rutas si las hay */}
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
