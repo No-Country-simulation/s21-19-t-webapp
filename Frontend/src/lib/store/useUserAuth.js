@@ -15,12 +15,17 @@ export const useUserAuth = create(
       loginWithGoogle: () => {
         // Determinar la URL de redirección basada en el entorno
         const isProduction = window.location.hostname !== 'localhost';
-        const redirectUri = isProduction 
-          ? 'https://urbia.onrender.com/login/oauth2/code/google'
-          : 'http://localhost:3000/login/oauth2/code/google';
         
-        // Redirigir a la API de autenticación con Google
-        window.location.href = `https://api-urbia.up.railway.app/oauth2/authorization/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
+        // Usar la URL completa para la redirección
+        const frontendBaseUrl = isProduction 
+          ? 'https://urbia.onrender.com'
+          : 'http://localhost:3000';
+        
+        // Incluir información sobre el origen en la solicitud
+        const origin = window.location.hostname;
+        
+        // Redirigir a la URL de autenticación de Google
+        window.location.href = `https://api-urbia.up.railway.app/oauth2/authorization/google?redirect_uri=${encodeURIComponent(frontendBaseUrl)}&origin=${origin}`;
       },
       login: async (email, password) => {
         try {
