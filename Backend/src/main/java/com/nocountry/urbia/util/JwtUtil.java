@@ -20,9 +20,6 @@ public class JwtUtil {
 
     public String generateToken(Usuarios usuario) {
         return Jwts.builder()
-                .claim("id", usuario.getId())
-                .claim("name", usuario.getNombre())
-                .claim("avatarUrl", usuario.getAvatarUrl())
                 .setSubject(usuario.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
