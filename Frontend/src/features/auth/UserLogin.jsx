@@ -91,7 +91,7 @@ export default function UserLogin({ isOpen, onOpenChange, isMobileMenu = false }
     }
   };
 
-  // Add handler for Google login
+  // Manejador para el inicio de sesión con Google
   const handleGoogleLogin = (e) => {
     e.preventDefault();
     loginWithGoogle();
