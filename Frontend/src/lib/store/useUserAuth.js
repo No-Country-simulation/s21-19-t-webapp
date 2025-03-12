@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { login as loginRequest } from "../api/auth/login";
 import { register as registerRequest } from "../api/auth/register";
 import { logout as logoutRequest } from "../api/auth/logout";
-import { jwtDecode } from "jwt-decode"; // You'll need to install this package
+import jwtDecode  from "jwt-decode"; // You'll need to install this package
 
 export const useUserAuth = create(
   persist(
