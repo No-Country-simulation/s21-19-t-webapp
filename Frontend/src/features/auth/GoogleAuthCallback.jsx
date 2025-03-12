@@ -1,53 +1,56 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useUserAuth } from '@/lib/store/useUserAuth';
-import { toast } from 'sonner';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import sadFrog from '@/assets/frogError.png';
+import { useEffect, useState } from "react";
+import {  useLocation } from "react-router-dom";
+import { useUserAuth } from "@/lib/store/useUserAuth";
+import { toast } from "sonner";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import sadFrog from "@/assets/frogError.png";
 
 export default function GoogleAuthCallback() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   const location = useLocation();
   const { handleGoogleCallback } = useUserAuth();
 
   useEffect(() => {
     const processCallback = async () => {
+      console.log("✅ GoogleAuthCallback montado");
+
+      const params = new URLSearchParams(location.search);
+      const token = params.get("token");
+
+      console.log("🔑 Token recibido:", token);
+
+      if (!token) {
+        console.error("❌ No se recibió el token en la URL");
+        setError("No se recibió el token de autenticación.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        console.log("✅ GoogleAuthCallback montado");
-        // Extract token from URL query parameters
-        const params = new URLSearchParams(location.search);
-        const token = params.get('token');
-        console.log("Token recibido:", token);
-
-        if (!token) {
-          throw new Error('No token received from authentication server');
-        }
-
-        // Process the token in our auth store
         const success = handleGoogleCallback(token);
-        
         if (success) {
-          toast.success('¡Bienvenido a Urbia!', {
-            description: 'Has iniciado sesión correctamente con Google'
+          toast.success("¡Bienvenido a Urbia!", {
+            description: "Has iniciado sesión correctamente con Google",
           });
-          
-          // Redirect to home page after successful login
-          navigate('/');
+
+          console.log("🔄 Redirigiendo al home...");
+          setTimeout(() => {
+            window.location.href = "/"; // 🔹 Redirección más robusta
+          }, 1000);
         } else {
-          throw new Error('Error processing authentication token');
+          throw new Error("Error procesando el token de autenticación.");
         }
       } catch (err) {
-        console.error('Authentication callback error:', err);
-        setError(err.message || 'Error during authentication');
+        console.error("❌ Error al procesar el token:", err);
+        setError(err.message || "Error durante la autenticación.");
       } finally {
         setLoading(false);
       }
     };
 
     processCallback();
-  }, [location, handleGoogleCallback, navigate]);
+  }, [location, handleGoogleCallback]);
 
   if (loading) {
     return (
@@ -64,5 +67,5 @@ export default function GoogleAuthCallback() {
     return <ErrorMessage message={`Error al iniciar sesión: ${error}`} imageSrc={sadFrog} />;
   }
 
-  return null; // This component doesn't render anything on success (redirects instead)
+  return null;
 }
