@@ -15,6 +15,17 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000, // Cambia el puerto a 3000
+    port: 3000, // Servidor en puerto 3000
+    open: true, // Abre el navegador automáticamente
+    strictPort: true, // Evita que use otro puerto si el 3000 está ocupado
+    historyApiFallback: true, // 🔹 Redirige todas las rutas a index.html
+  },
+  build: {
+    outDir: "dist",
+    sourcemap: true,
+  },
+  preview: {
+    port: 4173, // Puerto de preview diferente para evitar conflictos
+    historyApiFallback: true, // 🔹 También en preview
   },
 });

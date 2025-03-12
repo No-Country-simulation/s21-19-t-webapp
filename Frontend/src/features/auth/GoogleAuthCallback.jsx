@@ -15,9 +15,11 @@ export default function GoogleAuthCallback() {
   useEffect(() => {
     const processCallback = async () => {
       try {
+        console.log("✅ GoogleAuthCallback montado");
         // Extract token from URL query parameters
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
+        console.log("Token recibido:", token);
 
         if (!token) {
           throw new Error('No token received from authentication server');
