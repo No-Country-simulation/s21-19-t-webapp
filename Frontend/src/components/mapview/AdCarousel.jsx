@@ -15,24 +15,28 @@ const ads = [
     image: mercadoLivreImg,
     alt: "Mercado Libre",
     url: "https://www.mercadolibre.com",
+    objectFit: "fill" // Custom fit for this image
   },
   {
     id: 2,
     image: noCountryImg,
     alt: "No Country",
     url: "https://www.nocountry.tech",
+    objectFit: "fill" // Custom fit for this image
   },
   {
     id: 3,
     image: wazeImg,
     alt: "Waze",
     url: "https://www.waze.com/es/live-map/",
+    objectFit: "contain" // Custom fit for this image
   },
   {
     id: 4,
     image: aluraImg,
     alt: "Alura",
     url: "https://www.alura.com.br/",
+    objectFit: "fill" // Custom fit for this image
   },
   // Add more ads as needed
 ];
@@ -54,7 +58,7 @@ export default function AdCarousel({ className }) {
   };
 
   return (
-    <Card className={cn("w-full overflow-hidden border-1 shadow-2xl  rounded-lg", className)}>
+    <Card className={cn("w-full overflow-hidden border-1 shadow-2xl rounded-lg", className)}>
       <CardContent className="p-0">
         <AnimatePresence mode="wait">
           <motion.div
@@ -63,13 +67,14 @@ export default function AdCarousel({ className }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative w-[200px] h-[50px] md:w-[300px] md:h-[80px] cursor-pointer"
+            className="relative w-[190px] h-[50px] md:w-[300px] md:h-[60px] cursor-pointer"
             onClick={() => handleAdClick(ads[currentIndex].url)}
           >
             <img 
               src={ads[currentIndex].image} 
               alt={ads[currentIndex].alt}
-              className="w-full h-full object-contain rounded-lg"
+              style={{ objectFit: ads[currentIndex].objectFit || "contain" }}
+              className="w-full h-full rounded-lg"
             />
           </motion.div>
         </AnimatePresence>
