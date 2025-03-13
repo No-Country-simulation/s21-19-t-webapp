@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import mercadoLivreImg from "@/assets/ads/MLPubli.png";
 import noCountryImg from "@/assets/ads/noCountryPubli.png";
 import wazeImg from "@/assets/ads/Waze2.png";
+import aluraImg from "@/assets/ads/alura1.png";
 
 const ads = [
   {
@@ -26,6 +27,12 @@ const ads = [
     image: wazeImg,
     alt: "Waze",
     url: "https://www.waze.com/es/live-map/",
+  },
+  {
+    id: 4,
+    image: aluraImg,
+    alt: "Alura",
+    url: "https://www.alura.com.br/",
   },
   // Add more ads as needed
 ];
