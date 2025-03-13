@@ -130,7 +130,7 @@ export default function MapView() {
       />
 
       {/* Ad Carousel - positioned at the top of the map */}
-      <div className="absolute bottom-5 left-44 transform -translate-x-1/2 z-[999] w-[90%] max-w-[300px] max-h-[70px]">
+      <div className="absolute bottom-5 left-28 md:left-44 transform -translate-x-1/2 z-[999] w-[90%] md:max-w-[300px] max-w-[200px] max-h-[50px] md:max-h-[80px] ">
         <AdCarousel />
       </div>
 

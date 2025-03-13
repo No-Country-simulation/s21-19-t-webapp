@@ -56,7 +56,7 @@ export default function AdCarousel({ className }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative w-[300px] h-[80px] cursor-pointer"
+            className="relative w-[200px] h-[50px] md:w-[300px] md:h-[80px] cursor-pointer"
             onClick={() => handleAdClick(ads[currentIndex].url)}
           >
             <img 
