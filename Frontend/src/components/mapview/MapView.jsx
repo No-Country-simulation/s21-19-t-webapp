@@ -25,6 +25,7 @@ import InstallPWAButton from './AddPWAButton';
 // Remove the AddressCard import
 // import { AddressCard } from "../Adress/AdressCard";
 import CleanReportForm from '@/features/reports/form/CleanReportForm';
+import AdCarousel from './AdCarousel';
 
 import userIcon from '/frogIco.png';
 import reportIcon from '@/assets/nenufarIco.png';
@@ -127,6 +128,11 @@ export default function MapView() {
           }
         }}
       />
+
+      {/* Ad Carousel - positioned at the top of the map */}
+      <div className="absolute bottom-5 left-44 transform -translate-x-1/2 z-[999] w-[90%] max-w-[300px] max-h-[70px]">
+        <AdCarousel />
+      </div>
 
       <MapContainer
         center={center}
