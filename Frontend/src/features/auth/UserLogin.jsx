@@ -161,7 +161,7 @@ export default function UserLogin({ isOpen, onOpenChange, isMobileMenu = false }
                 {isLoading ? "Procesando..." : (isLogin ? "Iniciar sesión" : "Registrarse")}
               </Button>
               <div className="py-2">
-              <p className="text-center">O</p>
+         {/*      <p className="text-center">O</p> */}
                 </div>
 {/*                 <Button 
                   className="w-full md:w-[370px] flex items-center justify-center border gap-2 border-gray-300 bg-white text-black hover:bg-gray-100 h-[48px] rounded-[16px]"
