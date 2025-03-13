@@ -37,7 +37,7 @@ export default function AdCarousel({ className }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % ads.length);
-    }, 5000);
+    }, 6000);
     
     return () => clearInterval(interval);
   }, []);
@@ -47,7 +47,7 @@ export default function AdCarousel({ className }) {
   };
 
   return (
-    <Card className={cn("w-full overflow-hidden border-0 shadow-lg rounded-lg", className)}>
+    <Card className={cn("w-full overflow-hidden border-1 shadow-2xl  rounded-lg", className)}>
       <CardContent className="p-0">
         <AnimatePresence mode="wait">
           <motion.div
