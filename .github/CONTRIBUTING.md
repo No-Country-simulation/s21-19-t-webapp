@@ -1,6 +1,6 @@
-# 🤝 Guía de Contribución - Ciudad Escucha
+# 🤝 Guía de Contribución - Urbia
 
-¡Gracias por tu interés en contribuir a **Ciudad Escucha**! 🎉 Este documento describe las reglas y mejores prácticas para colaborar en el proyecto.
+¡Gracias por tu interés en contribuir a **Urbia**! 🎉 Este documento describe las reglas y mejores prácticas para colaborar en el proyecto.
 
 ---
 
@@ -76,4 +76,4 @@ npm test
 ### 🗣 6. Comunicación
 Si tienes dudas o sugerencias, únete a nuestro canal de **Discord** o abre un **Issue** en GitHub.
 
-📢 **¡Tu contribución ayuda a mejorar Ciudad Escucha! 🚀**
+📢 **¡Tu contribución ayuda a mejorar Urbia! 🚀**
