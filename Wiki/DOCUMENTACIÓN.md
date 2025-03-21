@@ -10,7 +10,7 @@ Bienvenido a la documentación oficial de **Urbia**. Aquí encontrarás informac
 | [`USER_STORIES`](https://docs.google.com/document/d/1QYpMNNTkodzCA1NQFGr-vWD-Dk9g27rwCXt_A9qPxb8/edit?usp=sharing) | Documentación de las **User Stories - Backlog**. |
 | [`MVP_PLAN.md`](https://github.com/No-Country-simulation/s21-19-t-webapp/wiki/MVP-Plan) | Planificación del **MVP** y cronograma de sprints. |
 | [`API_REFERENCE.md`](https://github.com/No-Country-simulation/s21-19-t-webapp/wiki/Documentaci%C3%B3n-de-la-API) | Documentación de los **endpoints de la API**. |
-| [`PLAN_DE_PRUEBAS`](https://docs.google.com/document/d/1bVrNkWEaicMixDMYYhdaumh3ESZsF6y-/edit?usp=sharing&ouid=105679593414464607056&rtpof=true&sd=true) | Documentación de las **Pruebas Aplicadas a App Urbia**. |
+| [`GESTIÓN_DE_PRUEBAS`](https://github.com/No-Country-simulation/s21-19-t-webapp/wiki/Gesti%C3%B3n-de-Pruebas) | Documentación de la **Gestión de Pruebas Aplicada a App Urbia**. |
 | [`UX_UI_DESIGN.md`](https://github.com/No-Country-simulation/s21-19-t-webapp/wiki/UX-UI-Design-%E2%80%90-Urbia) | Recursos de **UX/UI** y enlace a Figma. |
 | [`GIT_WORKFLOW.md`](https://github.com/No-Country-simulation/s21-19-t-webapp/wiki/GIT-Workflow-y-Convenci%C3%B3n-de-Commits) | Convenciones y flujo de trabajo en Git. |
 
